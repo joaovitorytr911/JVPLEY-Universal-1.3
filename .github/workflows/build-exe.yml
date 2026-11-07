@@ -1,0 +1,38 @@
+name: Build JVPLEY Windows EXE
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app.py"
+      - ".github/workflows/build-exe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar PyInstaller
+        run: python -m pip install --upgrade pip pyinstaller
+
+      - name: Gerar executavel
+        run: pyinstaller --noconfirm --clean --onefile --windowed --name JVPLEY app.py
+
+      - name: Publicar artefato EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: JVPLEY-Windows-EXE
+          path: dist/JVPLEY.exe
+          if-no-files-found: error
+          retention-days: 14
