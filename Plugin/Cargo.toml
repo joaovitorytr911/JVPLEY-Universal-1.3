@@ -1,0 +1,13 @@
+[package]
+name = "jvpley-ets2-plugin"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+
+[lib]
+name = "JVPLEY_ETS2"
+crate-type = ["cdylib"]
+
+[dependencies]
+scs-sdk-plugin = "=0.1.1"
