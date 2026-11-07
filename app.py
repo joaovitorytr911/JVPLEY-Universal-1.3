@@ -1,4 +1,4 @@
-import tkinter as tk
+# JVPLEY Universal 1.3 - prototipo inicial para Windows\nimport tkinter as tk
 from tkinter import ttk
 from datetime import datetime
 
