@@ -24,3 +24,13 @@ Esta é uma primeira estrutura/protótipo. GPS, Spotify, chamadas, leitura real 
 
 ## Segurança
 Não opere a interface enquanto conduz. Faça todos os testes com o veículo parado.
+
+
+## Gerar o executável Windows
+O GitHub Actions possui um fluxo em `.github/workflows/build-exe.yml` que compila `app.py` em `JVPLEY.exe` usando Windows.
+
+- O fluxo é iniciado ao enviar alterações em `app.py` ou manualmente pela aba **Actions**.
+- Quando terminar com sucesso, abra a execução e baixe o artefato **JVPLEY-Windows-EXE**.
+- O artefato fica disponível por 14 dias.
+
+O EXE é apenas o protótipo visual atual; integrações com GPS, Spotify, chamadas e telemetria ainda não existem.
