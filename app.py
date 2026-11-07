@@ -147,5 +147,43 @@ def tick():
     draw_clock(now)
     root.after(200, tick)
 
+# ---------- Tela de ignição estilo CarPlay ----------
+# Nesta primeira versão, a ignição é simulada ao abrir o aplicativo.
+# A leitura real do sinal elétrico do caminhão/ETS2 será integrada depois.
+main_widgets = [top, intro, body, bottom, statusbar]
+for widget in main_widgets:
+    widget.pack_forget()
+
+splash = tk.Frame(root, bg="#000000")
+splash.place(relx=0, rely=0, relwidth=1, relheight=1)
+splash_title = tk.Label(splash, text="", font=("Bahnschrift SemiBold", 42, "bold"), fg="#FFFFFF", bg="#000000")
+splash_title.place(relx=0.5, rely=0.46, anchor="center")
+splash_subtitle = tk.Label(splash, text="", font=("Bahnschrift SemiBold", 42, "bold"), fg="#FFFFFF", bg="#000000")
+splash_subtitle.place(relx=0.5, rely=0.55, anchor="center")
+splash_caption = tk.Label(splash, text="", font=("Segoe UI", 9), fg="#888888", bg="#000000")
+splash_caption.place(relx=0.5, rely=0.66, anchor="center")
+
+def reveal_ignition(text, label, index=0, done=None):
+    label.config(text=text[:index])
+    if index < len(text):
+        root.after(95, lambda: reveal_ignition(text, label, index + 1, done))
+    elif done:
+        done()
+
+def show_carplay_word():
+    reveal_ignition("CARPLAY", splash_subtitle)
+
+def enter_carplay():
+    splash.destroy()
+    top.pack(fill="x")
+    intro.pack(fill="x", padx=28, pady=(20, 12))
+    body.pack(fill="both", expand=True, padx=26, pady=(4, 12))
+    bottom.pack(fill="x", side="bottom")
+    statusbar.pack(fill="x", padx=30, pady=(0, 5))
+
+reveal_ignition("ANDROID", splash_title, done=show_carplay_word)
+splash_caption.config(text="INICIANDO CENTRAL MULTIMÍDIA")
+root.after(5200, enter_carplay)
+
 tick()
 root.mainloop()
