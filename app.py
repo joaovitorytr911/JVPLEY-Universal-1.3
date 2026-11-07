@@ -43,31 +43,49 @@ intro.pack(fill="x", padx=28, pady=(20, 12))
 tk.Label(intro, text="Sua viagem. Seu controle.", font=("Segoe UI", 23, "bold"), fg=WHITE, bg=BG).pack(anchor="w")
 tk.Label(intro, text="CENTRAL MULTIMÍDIA JVPLEY  •  INTERFACE 1.3", font=("Segoe UI", 9, "bold"), fg=CYAN, bg=BG).pack(anchor="w", pady=(3, 0))
 
-# ---------- Área principal ----------
+# ---------- Área principal: módulos à esquerda + início dos apps ----------
 body = tk.Frame(root, bg=BG)
-body.pack(fill="both", expand=True, padx=26, pady=(4, 12))
-body.grid_columnconfigure(0, weight=3)
-body.grid_columnconfigure(1, weight=2)
+body.pack(fill="both", expand=True, padx=20, pady=(4, 12))
+body.grid_columnconfigure(0, weight=0, minsize=205)
+body.grid_columnconfigure(1, weight=3)
+body.grid_columnconfigure(2, weight=2)
 body.grid_rowconfigure(0, weight=1)
 
+# Barra de módulos no canto esquerdo
+sidebar = tk.Frame(body, bg="#081523", highlightbackground=BORDER, highlightthickness=1, width=195)
+sidebar.grid(row=0, column=0, sticky="nsew", padx=(0, 14))
+sidebar.grid_propagate(False)
+tk.Label(sidebar, text="MÓDULOS", font=("Segoe UI", 10, "bold"), fg=CYAN, bg="#081523").pack(anchor="w", padx=14, pady=(16, 10))
+message = tk.StringVar(value="Início • escolha um aplicativo")
+
+modules = [
+    ("◈", "Telemetria"), ("♫", "Multimídia"), ("🚛", "Caminhões"),
+    ("⌨", "Atalhos"), ("🎙", "CARVOZ"), ("⏻", "Ignição"),
+    ("▦", "Painel"), ("⌁", "Conexão"), ("ᛒ", "Bluetooth"), ("☎", "Chamadas")
+]
+def select_module(name):
+    message.set(name + " • módulo selecionado; integração em desenvolvimento")
+
+for symbol, name in modules:
+    btn = tk.Button(sidebar, text=f"  {symbol}   {name}", anchor="w",
+                    font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#0b1b2c",
+                    activebackground="#123653", activeforeground=CYAN,
+                    relief="flat", bd=0, padx=10, pady=8,
+                    command=lambda n=name: select_module(n), cursor="hand2")
+    btn.pack(fill="x", padx=8, pady=2)
+
+# Página inicial dos aplicativos no centro
 left = tk.Frame(body, bg=BG)
-left.grid(row=0, column=0, sticky="nsew", padx=(0, 14))
+left.grid(row=0, column=1, sticky="nsew", padx=(0, 14))
 right = tk.Frame(body, bg=BG)
-right.grid(row=0, column=1, sticky="nsew")
-
-tk.Label(left, text="APLICATIVOS", font=("Segoe UI", 10, "bold"), fg=MUTED, bg=BG).pack(anchor="w", pady=(0, 10))
-
+right.grid(row=0, column=2, sticky="nsew")
+tk.Label(left, text="INÍCIO DOS APLICATIVOS", font=("Segoe UI", 10, "bold"), fg=MUTED, bg=BG).pack(anchor="w", pady=(0, 10))
 apps = tk.Frame(left, bg=BG)
 apps.pack(fill="both", expand=True)
 for c in range(2):
     apps.grid_columnconfigure(c, weight=1, uniform="app")
 for r in range(2):
     apps.grid_rowconfigure(r, weight=1, uniform="app")
-
-message = tk.StringVar(value="Central pronta • módulos externos ainda não conectados")
-
-def select_app(name, detail):
-    message.set(name + " • " + detail)
 
 def app_card(parent, row, col, symbol, title, subtitle, accent=CYAN):
     card = tk.Frame(parent, bg=PANEL, highlightbackground=BORDER, highlightthickness=1, cursor="hand2")
@@ -77,16 +95,16 @@ def app_card(parent, row, col, symbol, title, subtitle, accent=CYAN):
     icon = tk.Label(inner, text=symbol, font=("Segoe UI Emoji", 30), fg=accent, bg=PANEL)
     icon.pack(anchor="w")
     tk.Label(inner, text=title, font=("Segoe UI", 17, "bold"), fg=WHITE, bg=PANEL).pack(anchor="w", pady=(9, 2))
-    tk.Label(inner, text=subtitle, font=("Segoe UI", 9), fg=MUTED, bg=PANEL, wraplength=260, justify="left").pack(anchor="w")
+    tk.Label(inner, text=subtitle, font=("Segoe UI", 9), fg=MUTED, bg=PANEL, wraplength=230, justify="left").pack(anchor="w")
     for widget in (card, inner, icon):
-        widget.bind("<Button-1>", lambda event, n=title, d=subtitle: select_app(n, d))
+        widget.bind("<Button-1>", lambda event, n=title, d=subtitle: message.set(n + " • " + d))
 
-app_card(apps, 0, 0, "⌖", "NAVEGAÇÃO", "GPS e mapas • integração pendente")
-app_card(apps, 0, 1, "♫", "MÚSICA", "Central de áudio • integração pendente", "#67e6bd")
-app_card(apps, 1, 0, "◈", "TELEMETRIA", "Euro Truck Simulator 2 • plugin em desenvolvimento", "#69a8ff")
-app_card(apps, 1, 1, "⚙", "CONFIGURAÇÕES", "Preferências da central", "#b9a0ff")
+app_card(apps, 0, 0, "⌖", "MAPAS", "Navegação e localização")
+app_card(apps, 0, 1, "♫", "MÚSICA", "Spotify, YouTube e rádios")
+app_card(apps, 1, 0, "◈", "JOGO", "Integração com ETS2")
+app_card(apps, 1, 1, "⚙", "AJUSTES", "Preferências da central", "#b9a0ff")
 
-# ---------- Painel lateral: relógio e viagem ----------
+# Relógio e estado da viagem à direita
 clock_box = tk.Frame(right, bg=PANEL, highlightbackground=BORDER, highlightthickness=1)
 clock_box.pack(fill="both", expand=True)
 tk.Label(clock_box, text="RELÓGIO", font=("Segoe UI", 10, "bold"), fg=CYAN, bg=PANEL).pack(anchor="w", padx=18, pady=(16, 2))
@@ -96,7 +114,7 @@ date_label = tk.Label(clock_box, text="", font=("Segoe UI", 11, "bold"), fg=WHIT
 date_label.pack(pady=(0, 12))
 tk.Frame(clock_box, bg=BORDER, height=1).pack(fill="x", padx=18, pady=4)
 tk.Label(clock_box, text="STATUS DA VIAGEM", font=("Segoe UI", 9, "bold"), fg=MUTED, bg=PANEL).pack(anchor="w", padx=18, pady=(9, 5))
-tk.Label(clock_box, text="Aguardando conexão com o ETS2", font=("Segoe UI", 10), fg=WHITE, bg=PANEL, wraplength=280, justify="left").pack(anchor="w", padx=18, pady=(0, 14))
+tk.Label(clock_box, text="Aguardando conexão com o ETS2", font=("Segoe UI", 10), fg=WHITE, bg=PANEL, wraplength=220, justify="left").pack(anchor="w", padx=18, pady=(0, 14))
 
 # ---------- Barra inferior estilo dock ----------
 bottom = tk.Frame(root, bg="#081523", height=62)
