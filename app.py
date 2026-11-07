@@ -1,107 +1,151 @@
-# JVPLEY Universal 1.3 - prototipo visual para Windows 11
-# O relógio é funcional; GPS, áudio e telemetria continuam demonstrativos.
+# JVPLEY Universal 1.3 — interface estilo central CarPlay
+# Interface visual funcional; GPS, música e telemetria ainda aguardam integração.
 import tkinter as tk
-from tkinter import ttk
+from tkinter import messagebox
 from datetime import datetime
 import math
 
-BG = "#07111f"
-PANEL = "#0d2035"
+BG = "#050d18"
+PANEL = "#0b1b2c"
+PANEL_2 = "#10263b"
 CYAN = "#35d9ff"
-WHITE = "#eaf7ff"
-MUTED = "#8ca8bd"
-RING = "#17415c"
+WHITE = "#edf8ff"
+MUTED = "#91aabd"
+BORDER = "#17415c"
+GREEN = "#58e0a0"
 
 root = tk.Tk()
 root.title("JVPLEY Universal 1.3")
-root.geometry("1120x760")
-root.minsize(860, 620)
+root.geometry("1280x800")
+root.minsize(980, 650)
 root.configure(bg=BG)
 
-style = ttk.Style()
-style.theme_use("clam")
+# ---------- Barra superior ----------
+top = tk.Frame(root, bg="#081523", height=66)
+top.pack(fill="x")
+top.pack_propagate(False)
 
-header = tk.Frame(root, bg=BG)
-header.pack(fill="x", padx=28, pady=(20, 8))
+brand = tk.Frame(top, bg="#081523")
+brand.pack(side="left", padx=26)
+tk.Label(brand, text="JVPLEY", font=("Segoe UI", 22, "bold"), fg=CYAN, bg="#081523").pack(side="left")
+tk.Label(brand, text="  UNIVERSAL", font=("Segoe UI", 10, "bold"), fg=WHITE, bg="#081523").pack(side="left", pady=(8, 0))
 
-brand = tk.Frame(header, bg=BG)
-brand.pack(side="left", anchor="nw")
-tk.Label(brand, text="JVPLEY", font=("Segoe UI", 32, "bold"), fg=CYAN, bg=BG).pack(anchor="w")
-tk.Label(brand, text="UNIVERSAL 1.3  |  CENTRAL MULTIMÍDIA", font=("Segoe UI", 10), fg=MUTED, bg=BG).pack(anchor="w")
-digital_clock = tk.Label(brand, text="--:--:--", font=("Segoe UI", 20, "bold"), fg=WHITE, bg=BG)
-digital_clock.pack(anchor="w", pady=(10, 0))
+status = tk.Frame(top, bg="#081523")
+status.pack(side="right", padx=26)
+tk.Label(status, text="●", font=("Segoe UI", 10), fg=GREEN, bg="#081523").pack(side="left")
+tk.Label(status, text="SISTEMA LOCAL", font=("Segoe UI", 9, "bold"), fg=MUTED, bg="#081523").pack(side="left", padx=(5, 18))
+digital_clock = tk.Label(status, text="--:--", font=("Segoe UI", 18, "bold"), fg=WHITE, bg="#081523")
+digital_clock.pack(side="left")
 
-clock_panel = tk.Frame(header, bg=BG)
-clock_panel.pack(side="right", padx=8)
-clock_canvas = tk.Canvas(clock_panel, width=190, height=190, bg=BG, highlightthickness=0)
-clock_canvas.pack()
+# ---------- Cabeçalho ----------
+intro = tk.Frame(root, bg=BG)
+intro.pack(fill="x", padx=28, pady=(20, 12))
+tk.Label(intro, text="Sua viagem. Seu controle.", font=("Segoe UI", 23, "bold"), fg=WHITE, bg=BG).pack(anchor="w")
+tk.Label(intro, text="CENTRAL MULTIMÍDIA JVPLEY  •  INTERFACE 1.3", font=("Segoe UI", 9, "bold"), fg=CYAN, bg=BG).pack(anchor="w", pady=(3, 0))
 
-tk.Label(root, text="BEM-VINDO À CENTRAL", font=("Segoe UI", 21, "bold"), fg=WHITE, bg=BG).pack(anchor="w", padx=30, pady=(12, 4))
-tk.Label(root, text="Painel de demonstração • relógio em tempo real", font=("Segoe UI", 10), fg=MUTED, bg=BG).pack(anchor="w", padx=32)
+# ---------- Área principal ----------
+body = tk.Frame(root, bg=BG)
+body.pack(fill="both", expand=True, padx=26, pady=(4, 12))
+body.grid_columnconfigure(0, weight=3)
+body.grid_columnconfigure(1, weight=2)
+body.grid_rowconfigure(0, weight=1)
 
-main = tk.Frame(root, bg=BG)
-main.pack(fill="both", expand=True, padx=24, pady=20)
+left = tk.Frame(body, bg=BG)
+left.grid(row=0, column=0, sticky="nsew", padx=(0, 14))
+right = tk.Frame(body, bg=BG)
+right.grid(row=0, column=1, sticky="nsew")
 
-items = [
-    ("NAVEGAÇÃO", "GPS e mapas", "Integração ainda não conectada"),
-    ("MÚSICA", "Central de áudio", "Serviço de música ainda não conectado"),
-    ("TELEMETRIA", "Euro Truck Simulator 2", "Aguardando integração real com o jogo"),
-    ("CONEXÃO", "Multimídia", "Protótipo local — sem conexão com veículo"),
-]
-for i, (tag, title, detail) in enumerate(items):
-    card = tk.Frame(main, bg=PANEL, highlightbackground=RING, highlightthickness=1)
-    card.grid(row=i//2, column=i%2, sticky="nsew", padx=10, pady=10, ipadx=18, ipady=18)
-    tk.Label(card, text=tag, font=("Segoe UI", 10, "bold"), fg=CYAN, bg=PANEL).pack(anchor="w", padx=18, pady=(14, 8))
-    tk.Label(card, text=title, font=("Segoe UI", 19, "bold"), fg=WHITE, bg=PANEL).pack(anchor="w", padx=18)
-    tk.Label(card, text=detail, font=("Segoe UI", 10), fg=MUTED, bg=PANEL, wraplength=390, justify="left").pack(anchor="w", padx=18, pady=(8, 14))
-main.grid_columnconfigure(0, weight=1)
-main.grid_columnconfigure(1, weight=1)
-main.grid_rowconfigure(0, weight=1)
-main.grid_rowconfigure(1, weight=1)
+tk.Label(left, text="APLICATIVOS", font=("Segoe UI", 10, "bold"), fg=MUTED, bg=BG).pack(anchor="w", pady=(0, 10))
 
-footer = tk.Label(root, text="JVPLEY • Construção inicial • Não usar nem operar durante a condução", font=("Segoe UI", 9), fg=MUTED, bg=BG)
-footer.pack(pady=(0, 16))
+apps = tk.Frame(left, bg=BG)
+apps.pack(fill="both", expand=True)
+for c in range(2):
+    apps.grid_columnconfigure(c, weight=1, uniform="app")
+for r in range(2):
+    apps.grid_rowconfigure(r, weight=1, uniform="app")
 
-def draw_analog_clock(now):
+message = tk.StringVar(value="Central pronta • módulos externos ainda não conectados")
+
+def select_app(name, detail):
+    message.set(name + " • " + detail)
+
+def app_card(parent, row, col, symbol, title, subtitle, accent=CYAN):
+    card = tk.Frame(parent, bg=PANEL, highlightbackground=BORDER, highlightthickness=1, cursor="hand2")
+    card.grid(row=row, column=col, sticky="nsew", padx=7, pady=7)
+    inner = tk.Frame(card, bg=PANEL)
+    inner.pack(fill="both", expand=True, padx=18, pady=16)
+    icon = tk.Label(inner, text=symbol, font=("Segoe UI Emoji", 30), fg=accent, bg=PANEL)
+    icon.pack(anchor="w")
+    tk.Label(inner, text=title, font=("Segoe UI", 17, "bold"), fg=WHITE, bg=PANEL).pack(anchor="w", pady=(9, 2))
+    tk.Label(inner, text=subtitle, font=("Segoe UI", 9), fg=MUTED, bg=PANEL, wraplength=260, justify="left").pack(anchor="w")
+    for widget in (card, inner, icon):
+        widget.bind("<Button-1>", lambda event, n=title, d=subtitle: select_app(n, d))
+
+app_card(apps, 0, 0, "⌖", "NAVEGAÇÃO", "GPS e mapas • integração pendente")
+app_card(apps, 0, 1, "♫", "MÚSICA", "Central de áudio • integração pendente", "#67e6bd")
+app_card(apps, 1, 0, "◈", "TELEMETRIA", "Euro Truck Simulator 2 • plugin em desenvolvimento", "#69a8ff")
+app_card(apps, 1, 1, "⚙", "CONFIGURAÇÕES", "Preferências da central", "#b9a0ff")
+
+# ---------- Painel lateral: relógio e viagem ----------
+clock_box = tk.Frame(right, bg=PANEL, highlightbackground=BORDER, highlightthickness=1)
+clock_box.pack(fill="both", expand=True)
+tk.Label(clock_box, text="RELÓGIO", font=("Segoe UI", 10, "bold"), fg=CYAN, bg=PANEL).pack(anchor="w", padx=18, pady=(16, 2))
+clock_canvas = tk.Canvas(clock_box, width=220, height=220, bg=PANEL, highlightthickness=0)
+clock_canvas.pack(pady=(2, 4))
+date_label = tk.Label(clock_box, text="", font=("Segoe UI", 11, "bold"), fg=WHITE, bg=PANEL)
+date_label.pack(pady=(0, 12))
+tk.Frame(clock_box, bg=BORDER, height=1).pack(fill="x", padx=18, pady=4)
+tk.Label(clock_box, text="STATUS DA VIAGEM", font=("Segoe UI", 9, "bold"), fg=MUTED, bg=PANEL).pack(anchor="w", padx=18, pady=(9, 5))
+tk.Label(clock_box, text="Aguardando conexão com o ETS2", font=("Segoe UI", 10), fg=WHITE, bg=PANEL, wraplength=280, justify="left").pack(anchor="w", padx=18, pady=(0, 14))
+
+# ---------- Barra inferior estilo dock ----------
+bottom = tk.Frame(root, bg="#081523", height=62)
+bottom.pack(fill="x", side="bottom")
+bottom.pack_propagate(False)
+dock = tk.Frame(bottom, bg="#081523")
+dock.pack(expand=True)
+for symbol, label in [("⌂", "INÍCIO"), ("⌖", "MAPA"), ("♫", "ÁUDIO"), ("◈", "JOGO")]:
+    item = tk.Frame(dock, bg="#081523", padx=22)
+    item.pack(side="left", pady=6)
+    tk.Label(item, text=symbol, font=("Segoe UI Emoji", 17), fg=CYAN, bg="#081523").pack()
+    tk.Label(item, text=label, font=("Segoe UI", 7, "bold"), fg=MUTED, bg="#081523").pack()
+
+statusbar = tk.Label(root, textvariable=message, font=("Segoe UI", 8), fg=MUTED, bg=BG, anchor="w")
+statusbar.pack(fill="x", padx=30, pady=(0, 5))
+
+def draw_clock(now):
     clock_canvas.delete("all")
-    cx = cy = 95
-    radius = 82
-    clock_canvas.create_oval(8, 8, 182, 182, outline=RING, width=3)
-    clock_canvas.create_oval(14, 14, 176, 176, outline=CYAN, width=1)
+    cx = cy = 110
+    clock_canvas.create_oval(12, 12, 208, 208, outline=BORDER, width=4)
+    clock_canvas.create_oval(18, 18, 202, 202, outline=CYAN, width=1)
     for number in range(1, 13):
         angle = math.radians(number * 30 - 90)
-        tx = cx + math.cos(angle) * 65
-        ty = cy + math.sin(angle) * 65
-        clock_canvas.create_text(tx, ty, text=str(number), fill=WHITE, font=("Segoe UI", 10, "bold"))
+        x = cx + math.cos(angle) * 77
+        y = cy + math.sin(angle) * 77
+        clock_canvas.create_text(x, y, text=str(number), fill=WHITE, font=("Segoe UI", 11, "bold"))
     for tick in range(60):
         angle = math.radians(tick * 6 - 90)
-        inner = 72 if tick % 5 == 0 else 77
-        x1 = cx + math.cos(angle) * inner
-        y1 = cy + math.sin(angle) * inner
-        x2 = cx + math.cos(angle) * 80
-        y2 = cy + math.sin(angle) * 80
-        clock_canvas.create_line(x1, y1, x2, y2, fill=CYAN if tick % 5 == 0 else RING, width=2 if tick % 5 == 0 else 1)
-
-    seconds = now.second + now.microsecond / 1_000_000
-    minutes = now.minute + seconds / 60
-    hours = (now.hour % 12) + minutes / 60
-
+        inner = 86 if tick % 5 == 0 else 91
+        x1, y1 = cx + math.cos(angle) * inner, cy + math.sin(angle) * inner
+        x2, y2 = cx + math.cos(angle) * 96, cy + math.sin(angle) * 96
+        clock_canvas.create_line(x1, y1, x2, y2, fill=CYAN if tick % 5 == 0 else BORDER, width=2 if tick % 5 == 0 else 1)
+    sec = now.second + now.microsecond / 1_000_000
+    minute = now.minute + sec / 60
+    hour = now.hour % 12 + minute / 60
     def hand(value, units, length, color, width):
         angle = math.radians(value * 360 / units - 90)
-        x = cx + math.cos(angle) * length
-        y = cy + math.sin(angle) * length
-        clock_canvas.create_line(cx, cy, x, y, fill=color, width=width, capstyle=tk.ROUND)
-
-    hand(hours, 12, 39, WHITE, 5)
-    hand(minutes, 60, 57, CYAN, 3)
-    hand(seconds, 60, 68, "#ff647c", 1)
+        clock_canvas.create_line(cx, cy, cx + math.cos(angle) * length, cy + math.sin(angle) * length, fill=color, width=width, capstyle=tk.ROUND)
+    hand(hour, 12, 43, WHITE, 5)
+    hand(minute, 60, 65, CYAN, 3)
+    hand(sec, 60, 78, "#ff647c", 1)
     clock_canvas.create_oval(cx-4, cy-4, cx+4, cy+4, fill=CYAN, outline=WHITE)
 
-def update_clock():
+def tick():
     now = datetime.now()
-    digital_clock.config(text=now.strftime("%H:%M:%S"))
-    draw_analog_clock(now)
-    root.after(200, update_clock)
+    digital_clock.config(text=now.strftime("%H:%M"))
+    date_label.config(text=now.strftime("%d/%m/%Y"))
+    draw_clock(now)
+    root.after(200, tick)
 
-update_clock()
+tick()
 root.mainloop()
