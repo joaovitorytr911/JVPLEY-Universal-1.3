@@ -1,0 +1,29 @@
+name: Build JVPLEY ETS2 DLL scaffold
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Plugin/**"
+      - ".github/workflows/build-plugin.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S Plugin -B Plugin/build -A x64
+      - name: Compile
+        run: cmake --build Plugin/build --config Release
+      - name: Upload bootstrap DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: JVPLEY-ETS2-DLL-SCAFFOLD-NOT-FOR-GAME
+          path: Plugin/build/Release/JVPLEY_ETS2.dll
+          if-no-files-found: error
+          retention-days: 14
