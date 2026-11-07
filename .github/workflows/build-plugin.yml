@@ -1,4 +1,4 @@
-name: Build JVPLEY ETS2 DLL scaffold
+name: Build JVPLEY ETS2 Telemetry DLL
 
 on:
   push:
@@ -12,18 +12,19 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-plugin:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Configure
-        run: cmake -S Plugin -B Plugin/build -A x64
-      - name: Compile
-        run: cmake --build Plugin/build --config Release
-      - name: Upload bootstrap DLL
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build SCS telemetry plugin (Windows x64)
+        run: cargo build --manifest-path Plugin/Cargo.toml --release --target x86_64-pc-windows-msvc
+      - name: Publish DLL
         uses: actions/upload-artifact@v4
         with:
-          name: JVPLEY-ETS2-DLL-SCAFFOLD-NOT-FOR-GAME
-          path: Plugin/build/Release/JVPLEY_ETS2.dll
+          name: JVPLEY-ETS2-x64-DLL
+          path: Plugin/target/x86_64-pc-windows-msvc/release/JVPLEY_ETS2.dll
           if-no-files-found: error
           retention-days: 14
